@@ -1,0 +1,266 @@
+Name: Oladotun Opasina
+Purpose: Final Project Pt 1
+Instructor: Dr Yair Amir
+
+The purpose of this project is to design and develop a C++ template based on an expandable multi-level hash(MLH)
+data structure that stores both a data and a key.
+
+The multi-level hash data structure needs to be able to perform at least 5 different functions:
+
+1. Insert: the insert function receives a key and an object and inserts the objectinto the repository if an object with that key does not exist already. The insert function is also responsible for incrementing the total size of each Node in the multi level hash data structure.
+
+2. Delete: the delete function receives a key and removes the corresponding object from the Repository if it exists. The delete function is also responsible for decrementing the total size of each Node in the multi level hash data structure.
+
+3. Get: the get function receives a key and returns the appropriate object from the repository if it exists.
+
+4. Print(<<): the print function prints the number of objects in the MLH data structure, the current number of levels of the deepest MLH node, and the number of Nodes in the repository.
+
+General Approach:
+
+Brief Tutorial: 
+The Mlh data structure can consist of one or more multiple nodes. Each node in the Mlh data structure contains 5 keys, 5 object and 5 pointers to the node below it. The Mlh data structure as one Stem Node that could progressively grow when 4 keys and data have been inserted into it. The pointers of the first Stem node points to new node below it and those nodes can point to other nodes progressively.
+
+In thinking about this project it was suggested that we create two header files with one modelling the behavior of a particular node in the structure called it MlhNode.h and another file modelling the action performed on the data structure called Mlh.h. This definitely helped in reducing ambiguousness while coding and also helped me in debugging my code easily.
+
+MlhNode.h
+-----
+The MlhNode.h is a C++ template file that models a particular node. A node consists of a node type pointer used to point up and an array structure of size six that consists of an integer key, object data and a pointer to the node below. It also consists of a counter that keeps track of the size of the node.
+
+Pseudocode:
+1.  Make the Mlh.h class a friend to the MlhNode so Mlh can have access to the private members of MlhNode by forward declaration.
+2.  Declare MlhNode as a template class with a generic name T.
+3.  The public members of MlhNode will be described in details under Functions.
+4. The private members of MlhNode includes
+	- a pointer called upPtr of type MlhNode
+	- an array of 6 node structure that includes a key, pointer to the data and a downPtr of type MlhNode called element.
+	- an integer Count
+Functions:
+5. The constructor of the MlhNode updates all the upPtr and downPtr to null/0 , the keys to -1, and the Count to 0.
+6. The Deconstutor is responsible for deleting all the non null nodes that it downPtr points to below it.
+
+Mlh.h
+-----
+The Mlh.h is a C++ template file that models a multi level data structure.The data structure can consists of multiple Mlh  nodes and at most 9 levels from the top to bottom . Functions such as insert,delete, or get are performed on nodes that are of size 5.
+
+Pseudocode:
+1. Include MlhNode.h and ML_hash.h that will be utilized in the Mlh data structure.
+2. Declare MlhNode as a template class with a generic name T.
+3. Declare the "<<" to be overloaded as a friend class to Mlh 
+3. The public members of Mlh will be described in details under Functions.
+4. The private members of Mlh includes:
+	- a pointer called stemPtr of type MlhNode that represents the Top node in the Mlh structure.
+	- an integer noOfLevel that represents the number of levels of the Mlh structure.
+	- an integer nodeCount that keeps track of the efficiency of the hash structure.
+		nodeCount is incremented when a node pointer points to another node.  
+	- an integer totalNoOfObject that keeps track of the number of Objects in the repository.
+	which is incremented when an data is added to the structure and decremented when one data is deleted.
+	- a boolean print_all that will be used to print all the data/key in the repository
+Functions:
+1. The constructor of Mlh(), initializes the stemPtr, the noOfLevel and nodeCount to 0.
+2. The deconstructor of Mlh(), deletes the stemPtr node if the node is present and hence delete all other nodes recursively.
+
+3. Mlh_insert(key,T *data ): is responsible for inserting unique keys and data into the Mlh data structure.
+- Declare a generic pointer type MlhNode<T> traversePtr
+- Declare a generic pointer type MlhNode<T> parentPtr
+- Declare an integer Level and initiliaze it to zero
+- Declare an integer nextLeafLevel
+- traversePtr points to the stemPtr
+- while stemPtr is not null
+	* if traverse->Count is greater than 5 (find the right node to insert to)
+		-increment the Level
+		- Call Ml_hash by passing Level and key to it and store it nextLeafLevel
+		- if traversePtr element[nextLeafLevel] downPtr is null
+			- points parentPtr to traversePtr
+		- traversePtr points to traversePtr element[nextLeafLevel] downPtr
+	* else 
+		- Do a linear search through the key in the leaf node level and if the key is present return false
+		- if the size of traversePtr Node is equal to 5 (Expand that node )
+			- Increment the Level by 1
+			- point the parentPtr to traversePtr
+			- for all the keys in the parentPtr
+				- pass the keys if through the ML_hash function and store it in nextLeafLevel
+				- if point traversePtr to the parentPtr element[nextLeafLevel] downPtr is null
+					- create memory for a new node and point traversePtr to it
+					- point traversePtr->upPtr to parentPtr
+					- point parentPtr element[nextLeafLevel] downPtr to traversePtr
+				- Increment traverse->Count by 1
+				- assign parentPtr->element[i].key to traversePtr->element[traverse->Count].key
+				- point  parentPtr->element[i].data to traversePtr->element[traversePtr->Count].data
+			- Call Ml_hash by passing Level and key to it and store it nextLeafLevel
+			- Assign Level + 1 to the noOfLevel
+			- point traversePtr to parentPtr->element[nextLeafLevel].downPtr
+		- else 
+			break out of while loop
+- if isEmpty function is true
+	- allocate memory of type MlhNode and point stemPtr to it
+	- point traversePtr to stemPtr
+- else if traversePtr is null
+	- allocate memory of type MlhNode and point traversePtr to it
+	- point traversePtr->upPtr to parentPtr
+	- point parentPtr element[nextLeafLevel] downPtr to traversePtr
+- increment traversePtr->Count by 1
+- assign key to traversePtr->element[traverse->Count].key
+- point  data to traversePtr->element[traversePtr->Count].data
+- while traverse->upPtr is not null
+	-increment traverse->upPtr->Count by 1
+	-point traversePtr to traversePtr
+- return true
+
+4. Mlh_delete(key): is responsible for deleting a key if present the repository and collapsing a child node when it parents node size becomes 5.
+
+- Declare a generic pointer type MlhNode<T> traversePtr and initialize it to zero
+- Declare a generic pointer type MlhNode<T> parentPtr and initialize it to zero
+- Declare a generic data type currentData and initialize it to zero
+- Declare an integer Level and initiliaze it to zero
+- Declare an integer nextLeafLevel
+- Declare an integer parentPosition
+- Declare a boolean keyPresent and initialize it to null
+- traversePtr points to the stemPtr
+- while stemPtr is not null
+	* if traverse->Count is greater than 5 (find the right node to insert to)
+		-increment the Level
+		- Call Ml_hash by passing Level and key to it and store it nextLeafLevel
+		- traversePtr points to traversePtr element[nextLeafLevel] downPtr
+	* else 
+		- Do a linear search through the key in the leaf node level with a for loop
+		- if the key is present , set keyPresent to true
+			- point the currentData to the data where the key exists.
+			compress the array 
+			- for the index where the key occurs to where the index + 1 is less than the traverse->Count
+				-assign traversePtr->element[index + 1] key to traversePtr->element[index ] key
+				-point traversePtr->element[index ] data to traversePtr->element[index + 1] data
+			- traversePtr->element[traverse->Count].key is set to -1
+			- traversePtr->element[traverse->Count].data is set to 0
+			- break  out the linear search for loop
+		- if the keyPresent is false
+			- return 0
+		- while traversePtr is not 0 and keyPresent is true
+			- Decrement traversePtr->Count by 1
+			- if traversePtr->Count is zero (Delete the empty node)
+				* parentPtr points to traversePtr's upPtr
+				* delete traversePtr
+				* point traversePtr to parentPtr
+				* if parentPtr is not 0
+					- set parent->element[nextLeafLevel].downptr to 0
+				* else
+					- set stemPtr to 0
+			- else if traversePtr->Count is 5 (Collapse)
+				- point parentPtr to traversePtr
+				- set parentPosition to 1
+				- for i  from 1 through 5
+					- if parentPtr->element[i].downPtr is not 0
+						- point traversePtr to parentPtr->element[i].downPtr
+						- for j from 1 through traversePtr->Count
+							* assign traversePtr->element[j].key to parentPtr->element[parentPosition].key 
+							* point parentPtr->element[parentPosition].data to traversePtr->element[j].data
+							* increment parentPosition by 1
+						- set parentPtr->element[i].downPtr to 0
+						- delete traversePtr
+						- set traversePtr to 0
+				- point traversePtr to parent->upPtr
+			- else
+				point traversePtr to traversePtr->upPtr
+		- return currentData
+- return 0
+
+5. Mlh_get(key): is responsible for returning the corresponding data if the key is present.
+
+- Declare a generic pointer type MlhNode<T> traversePtr 
+- Declare an integer Level and initiliaze it to zero
+- Declare an integer nextLeafLevel
+- traversePtr points to the stemPtr
+- while stemPtr is not null
+	* if traverse->Count is greater than 5 (find the right node to insert to)
+			-increment the Level
+			- Call Ml_hash by passing Level and key to it and store it nextLeafLevel
+			- traversePtr points to traversePtr element[nextLeafLevel] downPtr
+	* else
+		- Do a linear search through the key in the leaf node level with a for loop
+			- if the key is present , return the data for that key
+		- return 0 if the key is not present
+- return key if the stemPtr is null
+
+6. printWrapper(MlhNode<T> *traversePtr): is responsible for printing all the keys and data in the function recursively.
+
+- Base Case:
+ - if traversePtr->Count is less than or equal to 5
+ 	- for i from 1 through to traversePtr->Count
+ 		- print out the key and the data
+ - else 
+ 	- for i from 1 through to 5
+ 		-if traversePtr->element[i].downPtr is not zero
+ 			- call printWrapper(traversePtr->element[i].downPtr)
+
+7. Mlh_set_print_option(key): is responsible for printing calling printWrapper function to print all the key and the data.
+- A switch statement takes the key as input
+	- case 1: 
+		set print_all to true
+		break
+	- default 
+		set print_all to false
+8. isEmpty(): checks if the stemPtr is 0 or not
+
+9. &operator<<( ostream &output, const Mlh<T> &m ) : is the overloaded function responsible for printing the number of levels in the data structure, no of data present, total effort done on the repository. It also prints all the key and data when the Mlh is not empty and when print_all is true
+
+Results:
+The result of the actions performed on the repository are as follows:
+1a. Inputs of 1000 operations, range of 100, starting seed of 1 
+  Number of Next: 6288
+1b. Inputs of 1,000,000 operations,range of 100, starting seed of 1
+  Number of Next: 6664704
+1c. Inputs of 1,000,000 operations, range of 10,000, starting seed of 1
+  Number of Next: 7551646
+1d. Inputs of 10,000,000 operations, range of 100,000, starting seed of 1
+  Number of Next: 91037330
+
+
+		
+2. 		List Type | Seed | Number of Next | 
+		MLH		  |  1   | 7551646		  |	
+				  |	 2   | 7552836		  |	
+				  |	 3	 | 7550252		  |	
+				  |	 4	 | 7551103	      |	
+				  |  5   | 7541233		  |	
+				  |  6   | 7554865		  |	
+				  |	 7   | 7556032		  |	
+				  |	 8	 | 7542593		  |	
+				  |	 9	 | 7551698	      |	
+				  |  10  | 7548923		  |	
+
+		Total Number of Next = 75501181
+		Average Number of Next = 7550118.1	  
+
+		List Type | Seed | Number of Next | 
+		Mlh 	  |  1   | 91037330		  |	
+				  |	 2   | 91005100		  |	
+				  |	 3	 | 91004379		  |	
+				  |	 4	 | 90996824	      |	
+				  |  5   | 90989908		  |	
+				  |  6   | 91027633		  |	
+				  |	 7   | 90983346		  |	
+				  |	 8	 | 91014456		  |	
+				  |	 9	 | 90999732	      |	
+				  |  10  | 91012285		  |	
+		Total Number of Next = 910070993
+		Average Number of Next = 91007099.3	
+
+Conclusion: This project enabled me to understand how to build a complex data structure. I was able to expand and collapse the different data nodes for the MLH data structure. This project really helped me learn a lot about overloading, C++ generic templates and data structures. I truly enjoyed it.
+
+Acknowledgement: 
+Dr. Yair Amir, Amy Babay, Jeff DallaTezza and the numerous teaching assistants and course assistants of CS 120.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

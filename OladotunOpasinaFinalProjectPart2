@@ -1,0 +1,362 @@
+Name: Oladotun Opasina
+Purpose: Final Project Pt 2
+Instructor: Dr Yair Amir
+
+The purpose of this project is to design and develop an  an Object Oriented C++ application program that manages a vehicle service center. The center services different kinds of vehicles,including (regular) cars, hybrids, buses, and motorcycles. This project utilizes knowledge gained thus far in the class such as inheritance and polymorphism on classes and objects that would be utilized through out the project.
+
+The project utilizes the is-A(Inheritance) relationship and has-A(Composition) relationship of Objects and classes.
+
+The relationships are as follows:
+1. A vehicle has a list of tasks.
+2. A car is a type of Vehicle.
+3. A Hybrid car is a type of Car.
+4. A bues is a type of Vehicle.
+4. A motorcycle is a type of vehicle.
+
+These relationships and properties of the multiple classes in the project are described as follows:
+
+1. Vehicle: The vehicle class models each vehicle brought to the service center. Multiple tasks can be performed on each vehicle at the center while at the center. Each vehicle has a Unique Id,Model year,Color, and Mileage properties.
+
+2. Car: The Car class models a particular type of vehicle. It contains extends properties of Vehicle class and adds properties such as Engine size, Gas type and the Car's Engine pollution level.
+
+3. Hybrids: The Hybrid car models a particular type of car. It extends the Car class and adds properties such as it's Motor Power, Motor overall usage and battery capacity.
+
+4. Motorcycle: models a particular type of vehicle brought to the center. The motorcycle has the following properties: Engine size, Front wheel size, Back wheel size and also the propeties of the Vehicle class.
+
+5. Buses: models a particular type of vehicle brought to the center. The motorcycle has the following properties: Passenger capacity and also the propeties of the Vehicle class.
+
+6. Task: models the task performed in the center. It stores the name of the task, cost of labor for the task and cost of parts for the task.
+
+The vehicle center application utilizes the Mlh data structure described in part 1 to store and delete vehicle information that are brought to the center and leave the center.
+
+
+General Approach :
+
+The following files would be created in this project:
+Task.cpp Task.h Vehicle.cpp Vehicle.h Cars.cpp Cars.h Hybrid.cpp Hybrid.h Buses.h Buses.cpp Motorcycle.h Motorcycle.cpp centerDriver.cpp
+
+In creating this project, I used a down-up design approach. First creating my Task.cpp, and Task.h that models the Task class.
+
+
+Task.h:
+The Task.h represents the header file for the Task class. It includes a structure called data_type that has a string name, double costOfLabor and double costOfPart.
+Two classes, TaskNode and Task. 
+
+TaskNode Class: models a particular task that has to performed on a vehicle.It is a friend of class Task and therefore can access Task's private members.
+
+Pseudocode:
+1. The Class functions that will be described in details in Task.h section.
+2. The private data class members are as follows:
+   1. data_type content and a pointer of Class TaskNode next.
+
+Pseoudocode for Task: describes the ac
+
+1. The Class functions that will be described in details in Task.h section.
+2. The private data class members are as follows:
+   1. Task_Node pointer First_ptr and Last_ptr
+
+Task.cpp
+The Task.cpp represents the source code of the Task. It includes the Task.h header definitions.
+
+1. The TaskNode constructor takes in a data_type data and initializes the content and set the next TaskNode to NULL
+
+2. Get_data() : returns the content data_type
+
+3. The Task constructors initalizes the First_ptr and Last_ptr to NULL
+
+4. The Task deconstructor: deletes all the element in the Queue
+    1. Declare a pointer TaskNode pnode
+    2. while First_ptr is not NULL
+       - point pnode to First_ptr
+       - point First_ptr to pnode next pointer
+       - delete pnode
+    3. Set Last_ptr to NULL
+
+5. Insert(const data_type data): inserts a data_type to the Task
+       1. Declare a pointer TaskNode pnode
+       2. Allocate memory for pnode of size data
+       3. if(First_ptr is NULL)
+            - First_ptr points to pnode
+            - Last_ptr points to pnode
+       4.  else
+            -Last_ptr next points to pnode
+            - Last_ptr points to pnode next pointer
+
+6. Print(): prints the list in order of insertion
+       1. Declare a pointer TaskNode pnode
+       2. Declare a data_type data_out
+       3. set pnode to First_ptr
+       4.  while pnode is not NULL
+            - data_out points to returned data of pnode->Get_dat()
+            - Print the name costOfLabor and costOfPart of data_out
+            - pnode points to pnode next pointer
+
+
+Vehicle
+-------
+Vehicle.h:
+The Vehicle.h serves as the header file for the Vehicle class. It includes the Task.h.
+
+Pseudocode:
+1. Declare a static integer called maxNoOfTask and intialize it to 10.
+2. Declare the "<<" as a friend to print out the Vehicle class.
+3. The Class functions will be described in details in Vehicle.cpp section.
+	- The print() and iniitializer are declared as virtual members.
+4. The protected data class members are as follows:
+    1. integer uniqueId,integer modelYear, string vehicleColor, string vehicleType,
+    	double mileage, a pointer currentTask of type Task, int noOfTask,
+    	double totalCostOfLabor, double totalCostOfParts
+
+ Vehicle Functions:
+
+1. A Vehicle constructor:
+  a.  allocate memory for a new Task and point currentTask to it
+  b. intialize totalCostOfLabor and totalCostOfParts to zero
+2. A Vehicle destructor 
+  a. delete the currentTask if it is present
+3. setId: set the uniqueId with the passed in integer parameter
+3. setModel: set the modelYear with the passed in integer parameter
+4. setMileage : set the mileage with the passed in double Mileage parameter
+5. setColor : set the vehicleColor with the passed in string Color parameter
+6. setVehicleType: set the vehicleType with the passed in string type parameter
+7. getModel: returns the modelYear
+8. getMileage: returns the mileage
+9. getId: returns the uniqueId
+10. setTask :
+	1. Declare a data_type newTask
+	2. Declare a char count
+	3. A do while loop that exits when cont is equal to n or N
+		1. Get an string input for newTask.name
+		2. A do while loop that exits when newTask.costOfLabor is greater than 0 
+			- Get an input for newTask.costOfLabor
+		3. A do while loop that exits when newTask.costOfPart is greater than 0 
+			- Get an input for newTask.costOfPart 
+		4. Insert newTask into currentTask queue
+		5. Increment the totalCostOfParts by newTask.costOfPart
+		6. Increment the totalCostOfLabor by newTask.costOfLabor 
+
+
+11. intitializer : serves as a menu to initalize the members of the Vehicle class.
+
+		1. Declare an integer called colorType
+		2. A do while loop that exits when modelYear is less than 2000 and modelYear is greater than 2014.
+			- Get an input for the modelYear
+		3. A do while loop that exits when the vehicleColor is not " "
+			- Get an input colorType that represents a particular color type and set the string vehicleColor to the selected colorType such as "white","black" e.t.c.
+		4. A do while loop that exits when mileage is less than 0
+			- set the value of mileage
+
+12. print: prints out the vehicleType, modelyear, vehicleColor, and mileage. It is a virtual member and would be extended in the derived classes from Vehicle.
+
+13. displayTask: prints out all the tasks that a vehicle has. It also prints out the sum of totalCostOfLabor and totalCostOfParts.
+
+14. ostream &operator<< : is the overloaded "<<" print operator.
+    1. Calls the print function on vehicle class.
+    2. Calls the displayTask() on the vehicle class
+
+
+
+Cars
+----
+Cars.h:
+The Cars.h reprsent the header for Car.cpp. It is a derived class from Vehicle.cpp.
+
+1. Declare the "<<" as a friend to print out the Car class members.
+2. The Class functions will be described in details in Cars.cpp section.
+	- The print() and iniitializer are declared as virtual members.
+3. The protected data class members are as follows:
+    1. string vehicleColor, string vehicleType, int pollutantLevel
+
+Cars.cpp:
+
+Cars Functions:
+
+1. An empty Cars constructor:
+  a. calls the Vehicle constructor
+2. An empty Cars destructor 
+3. An intitializer : serves as a menu to initalize the members of the Cars class.
+	1. Declare an integer called gasSelection
+	2. Call the Vehhicle::initializer() function
+	3. Get an input for the Engine size
+	4. A do while loop that exits when the gasType is not " "
+		- Get an input gasSelection that represents a particular gasType and set the string vehicleColor to the selected gasType such as "Premium","Regular" e.t.c.
+	5. Get an input for the pollutantLevel
+
+4. print: prints out the vehicleColor, vehicleType, and pollutantLevel. It is a virtual member and extends the Vehicle print function.
+
+5. ostream &operator<< : is the overloaded "<<" print operator.
+    1. Calls the print function on Cars class.
+    2. Calls the displayTask() on the Cars class which calls the Vehicle class displayTask() through inheritance.
+
+
+Hybrid
+------
+Hybrid.h:
+The Hybrid.h reprsent the header for Hybrid.cpp. It is a derived class from Cars.cpp.
+
+1. Declare the "<<" as a friend to print out the Hybrid class members.
+2. The Class functions will be described in details in Hybrid.cpp section.
+	- The print() and iniitializer are declared as virtual members.
+3. The protected data class members are as follows:
+    1. int motorPower, int motorUsage, double batteryCapacity.
+
+Hybrid.cpp:
+
+Hybrid Functions:
+
+1. An empty Hybrid constructor:
+  a. calls the Cars constructor
+2. An empty Hybrid destructor 
+3. An intitializer : serves as a menu to initalize the members of the Hybrid class.
+	1. Call the Cars:initializer() function
+	2. A do while loop that exits when the motorPower is greater than 0
+		-Get an input for the motorPower
+	3.  A do while loop that exits when the motorUsage is greater than 0
+		-Get an input for the motorUsage
+	4. A do while loop that exits when the batteryCapacity is greater than 0
+		- -Get an input for the motorUsage.
+
+4. print: prints out the motorPower, motorUsage, and batteryCapacity. It is a virtual member and extends the Cars print function.
+
+	
+5. ostream &operator<< : is the overloaded "<<" print operator.
+    1. Calls the print function on an Hybrid class.
+    2. Calls the displayTask() on the Hybrid class which calls the Vehicle class displayTask() through inheritance.
+
+ Buses
+-------
+Buses.h:
+The Buses.h reprsent the header for Buses.cpp. It is a derived class from Vehicle.cpp.
+
+1. Declare the "<<" as a friend to print out the Buses class members.
+2. The Class functions will be described in details in Buses.cpp section.
+	- The print() and iniitializer are declared as virtual members.
+3. The protected data class members are as follows:
+    1. int passengerCapacity.
+
+Buses.cpp:
+
+Buses Functions:
+
+1. An empty Buses constructor:
+  a. calls the Vehicle constructor
+2. An empty Hybrid destructor 
+3. An intitializer : serves as a menu to initalize the members of the Hybrid class.
+	1. Call the Vehicle:initializer() function
+	2. A do while loop that exits when the passengerCapacity is greater than 0
+		-Get an input for the passengerCapacity.
+4. print: prints out the passengerCapacity. It is a virtual member and extends the Vehicle print function.
+
+	
+5. ostream &operator<< : is the overloaded "<<" print operator.
+    1. Calls the print function on a Buses class instance m.
+    2. Calls the displayTask() on the Buses class instance which calls the Vehicle class displayTask() through inheritance.
+
+
+Motorcycle
+----------
+Motorcycle.h:
+The Motorcycle.h: reprsent the header for Motorcycle.cpp. It is a derived class from Vehicle.cpp.
+
+1. Declare the "<<" as a friend to print out the Motorcycle class members.
+2. The Class functions will be described in details in Motorcycle.cpp section.
+	- The print() and iniitializer are declared as virtual members.
+3. The protected data class members are as follows:
+    1. string engineSize, int frontWheelSize, int backWheelSize.
+
+Motorcycle.cpp:
+
+Motorcycle Functions:
+
+1. An empty Motorcycle constructor:
+  a. calls the Vehicle constructor
+2. An empty Motorcycle destructor 
+3. An intitializer : serves as a menu to initalize the members of the Hybrid class.
+	1. Call the Vehicle:initializer() function
+	2. Get input for the engineSize
+	3. A do while loop that exits when the frontWheelSize is greater than 0
+		-Get an input for the frontWheelSize.
+	4. A do while loop that exits when the backWheelSize is greater than 0
+		-Get an input for the backWheelSize.
+
+4. print: prints out the engineSize,frontWheelSize and backWheelSize. It is a virtual member and extends the Vehicle print function.
+
+	
+5. ostream &operator<< : is the overloaded "<<" print operator.
+    1. Calls the print function on a Motorcycle class instance m.
+    2. Calls the displayTask() on the Motorcycle class instance which calls the Vehicle class displayTask() through inheritance.
+
+ centerDriver.cpp
+------------------
+The center driver serves as the Main menu for this project. It includes Mlh.h, Vehicle.h, Buses.h,Motorcycle.h, Hybrid.h
+Pseudocode:
+
+1.  Declare a function header displayMenu, vehicleMenu, TaskMenu, checkoutMenu
+2.  Declare a pointer Vehicle newMotor.
+3.  Declare an Mlh with data type Vehicle called vehicleService
+
+Functions:
+4.	displayMenu:
+	1.	Declare an integer selected
+	2. do while loop that exits when selected is not 5
+		1. Display the Main menu as follows:
+		    1. Add a new Vehicle
+		    2. Add a new Task for Vehicles.
+		    3. Checkout Vehicle .
+		    4. Print Out all the Vehicles in Service.
+		    5. Quit.
+		2. get input for selected.
+		3. switch statement based on selected
+			* Case 1: Call vehicleMenu()
+			* Case 2: Call TaskMenu()
+			* Case 3: Call checkoutMenu()
+			* Case 4: set print option of Mlh and prints out the vehicleService
+			* Case 5: prints have a nice day
+5.  vehicleMenu
+    1.	Declare an integer selected
+    2.  Prompt the user to enter a number for a particular Vehicle Type
+    3.  switch statement selects the vehicle type , create a new type of the vehicle 
+    	and point newMotor to it. I also set the Vehicle type of newMotor based on the input enterd.
+    4.  do while loop that exits when the id entered is unique and is between 1 and 10000
+    	Prompt the user to enter an Id for the vehicle.
+    5.  call setId with input id on newMotor object.
+    6.	call initializer on the newMotor object.
+    7.  call setTask on the newMotor object
+    8.  call Mlh_insert with selected and newMotor on vehicleService
+    9.  call print() on newMotor
+    
+6.  TaskMenu: serves as the menu for adding a new Task.
+	1. Declare an integer currentId
+	2. Prompt user to enter input for currentId
+	3. check if the currentId exist in vehicleService by calling Mlh_get and point newMotor to it.
+	4. if the newMotor is not null
+		1. call setTask for newMotor
+		2. call displayTask for newMotor
+		else
+			print the id is not present
+
+7. checkoutMenu
+	1. Declare an integer currentId
+	2. Prompt user to enter input for currentId
+	3. check if the currentId exist in vehicleService by calling Mlh_delete and point newMotor to it.
+	4. if the newMotor is not 0
+		1. print checking out
+		2. call displayTask for newMotor
+		3. delete newMotor
+		4. set that newMotor to 0
+		else
+			print the id is not present
+
+8. In main:
+	1. Call displayMenu()
+	2. for i from 1 through 10000
+		1. call Mlh_get(i) on vehicleService by calling Mlh_get and point newMotor to it.
+		2. if newMotor is not 0
+			1. delete newMotor
+			2. set newMotor to zero
+
+Conclusion: This project enabled me to implement an overall knowledge gained in the CS 120 class. I was able to create a working project that uses both the Mlh data structure made in part 1. I really loved the challenges and experience from the class and also all the assistance that was giving to me for the class.
+
+Acknowledgement: 
+Dr. Yair Amir, Amy Babay, Jeff DallaTezza and the numerous teaching assistants and course assistants of CS 120.
+
